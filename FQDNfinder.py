@@ -11,8 +11,8 @@ import sys
 # Log to stdout
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-streamformater = logging.Formatter("[%(levelname)s] %(message)s")
 
+streamformater = logging.Formatter("[%(levelname)s] %(message)s")
 logstreamhandler = logging.StreamHandler()
 logstreamhandler.setFormatter(streamformater)
 logger.addHandler(logstreamhandler)
@@ -49,8 +49,11 @@ class FQDN(object):
                 logger.debug(possible_fqdn + 'is not the FQDN')
                 pass
 
-    def get(self):
-        return self.fqdn
+    def __repr__(self):
+        return self.fqdn[0], self.fqdn[1], ''.join(self.fqdn[2])
+
+    def __str__(self):
+        return "{}, ({}), {}".format(self.fqdn[0], " ".join(self.fqdn[1]), ''.join(self.fqdn[2]))
 
 if __name__ == '__main__':
 
@@ -67,13 +70,14 @@ if __name__ == '__main__':
         arg = parser.parse_args()
 
         # TODO: Add multiprocessing - DONE
-        # TODO: Add thread names in logger
+        # TODO: Add thread names in logger - DONE
         # TODO: use async and implment timeouts
 
 
         if arg.debug:
             logger.info("Loglevel set to DEBUG")
             logger.setLevel(logging.DEBUG)
+            logger.handlers[0].setFormatter(logging.Formatter("[%(levelname)s] %(relativeCreated)6d %(threadName)s  %(message)s"))
 
         logger.debug("Starting {0} on {1} with arguments: {2}".format(sys.argv[0], datetime.datetime.today(), vars(arg)))
 
@@ -84,7 +88,8 @@ if __name__ == '__main__':
                 if not arg.long:
                     print(sn.fqdn[0])
                 else:
-                    print(sn.fqdn[0], sn.fqdn[2])
+                    # print(sn.fqdn[0], ' '.join(sn.fqdn[2]))
+                    print(sn)
             else:
                 if not arg.warn:
                     logger.warning('{0} not found'.format(sn.shortName))
