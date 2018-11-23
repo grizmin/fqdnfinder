@@ -1,5 +1,6 @@
 from __future__ import print_function
 from socket import gethostbyname_ex as ghbnex
+import socket
 from multiprocessing.pool import ThreadPool, Queue
 import argparse
 import logging
@@ -39,11 +40,11 @@ class FQDN(object):
         for search_domain in self.search_domain_list:
             possible_fqdn = self.shortName + '.' + search_domain
             try:
-                logger.debug("Processing {}".format(search_domain))
+                logger.debug("Processing {0}".format(search_domain))
                 hostinfo = ghbnex(possible_fqdn)
                 self.found = True
                 return hostinfo
-            except:
+            except socket.gaierror:
                 logger.debug(possible_fqdn + 'is not the FQDN')
                 pass
 
@@ -73,7 +74,7 @@ if __name__ == '__main__':
             logger.info("Loglevel set to DEBUG")
             logger.setLevel(logging.DEBUG)
 
-        logger.debug("Starting {} on {} with arguments: {}".format(sys.argv[0], datetime.datetime.today(), vars(arg)))
+        logger.debug("Starting {0} on {1} with arguments: {2}".format(sys.argv[0], datetime.datetime.today(), vars(arg)))
 
         pool = ThreadPool(processes=20)
         multiple_results = pool.map(FQDN, arg.shortName)
@@ -85,5 +86,5 @@ if __name__ == '__main__':
                     print(sn.fqdn[0], sn.fqdn[2])
             else:
                 if not arg.warn:
-                    logger.warning('{} not found'.format(sn.shortName))
+                    logger.warning('{0} not found'.format(sn.shortName))
     main()
