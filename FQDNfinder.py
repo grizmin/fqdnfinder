@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 from __future__ import print_function
 from socket import gethostbyname_ex as ghbnex
 import socket
