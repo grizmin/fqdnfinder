@@ -18,10 +18,10 @@ logger.addHandler(logstreamhandler)
 
 class FQDN(object):
     found = False
-    default_search_domains = {'hec.sap.biz', 'rot.hec.sap.biz', 'ams.hec.sap.biz', 'stl.hec.sap.biz', 'sac.hec.sap.biz',
+    default_search_domains = ['hec.sap.biz', 'rot.hec.sap.biz', 'ams.hec.sap.biz', 'stl.hec.sap.biz', 'sac.hec.sap.biz',
                               'tyo.hec.sap.biz', 'osa.hec.sap.biz', 'syd.hec.sap.biz', 'mcc.rot.hec.sap.biz',
                               'rot2.hec.sap.biz', 'syd2.hec.sap.biz', 'mow.hec.sap.biz', 'mow2.hec.sap.biz',
-                              'yyz.hec.sap.biz', 'grizmin.org', 'int.grizmin.org'}
+                              'yyz.hec.sap.biz', 'grizmin.org', 'int.grizmin.org']
 
     def __init__(self, shortName, search_domain_list = set()):
         self.search_domain_list = search_domain_list
