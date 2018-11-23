@@ -43,22 +43,22 @@ class GetFQDN:
             except:
                 # print(possible_fqdn + 'is not the FQDN')
                 pass
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('shortName', nargs='+', help='host or hosts')
-    parser.add_argument('--long', '-l',action='store_const', help='long format (list of ips included)',const=True, default=False)
-    arg = parser.parse_args()
-
-    # TODO: Add multiprocessing
-
-    for sn in arg.shortName:
-        sn = GetFQDN(sn)
-        if sn.found:
-            if arg.long:
-                print(sn.fqdn[0], sn.fqdn[2])
-            else:
-                print(sn.fqdn[0])
-
 if __name__ == '__main__':
+
+    def main():
+        parser = argparse.ArgumentParser()
+        parser.add_argument('shortName', nargs='+', help='host or hosts')
+        parser.add_argument('--long', '-l',action='store_const', help='long format (list of ips included)',const=True, default=False)
+        arg = parser.parse_args()
+
+        # TODO: Add multiprocessing
+
+        for sn in arg.shortName:
+            sn = GetFQDN(sn)
+            if sn.found:
+                if arg.long:
+                    print(sn.fqdn[0], sn.fqdn[2])
+                else:
+                    print(sn.fqdn[0])
+
     main()
