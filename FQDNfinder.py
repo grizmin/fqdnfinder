@@ -54,6 +54,9 @@ if __name__ == '__main__':
                             default=False)
         parser.add_argument('--debug', '-d', action='store_const', help='print debug info', const=True,
                             default=False)
+        parser.add_argument('--warn', '-w', action='store_const', help='suppress warnings', const=False,
+                            default=True)
+
         arg = parser.parse_args()
 
         # TODO: Add multiprocessing
@@ -71,6 +74,7 @@ if __name__ == '__main__':
                 else:
                     print(sn.fqdn[0], sn.fqdn[2])
             else:
-                logger.warning('{} not found'.format(sn.shortName))
+                if not arg.warn:
+                    logger.warning('{} not found'.format(sn.shortName))
 
     main()
