@@ -2,6 +2,8 @@ from __future__ import print_function
 from socket import gethostbyname_ex as ghbnex
 import argparse
 import logging
+import datetime
+import sys
 
 # Log to stdout
 logger = logging.getLogger(__name__)
@@ -9,12 +11,11 @@ logger.setLevel(logging.INFO)
 streamformater = logging.Formatter("[%(levelname)s] %(message)s")
 
 logstreamhandler = logging.StreamHandler()
-logstreamhandler.setLevel(logging.INFO)
 logstreamhandler.setFormatter(streamformater)
 logger.addHandler(logstreamhandler)
 
 
-class GetFQDN:
+class FQDN:
     found = False
     default_search_domains = {'hec.sap.biz', 'rot.hec.sap.biz', 'ams.hec.sap.biz', 'stl.hec.sap.biz', 'sac.hec.sap.biz',
                               'tyo.hec.sap.biz', 'osa.hec.sap.biz', 'syd.hec.sap.biz', 'mcc.rot.hec.sap.biz',
@@ -37,28 +38,39 @@ class GetFQDN:
         for search_domain in self.search_domain_list:
             possible_fqdn = self.shortName + '.' + search_domain
             try:
+                logger.debug("Processing {}".format(search_domain))
                 hostinfo = ghbnex(possible_fqdn)
                 self.found = True
                 return hostinfo
             except:
-                # print(possible_fqdn + 'is not the FQDN')
+                logger.debug(possible_fqdn + 'is not the FQDN')
                 pass
 if __name__ == '__main__':
 
     def main():
         parser = argparse.ArgumentParser()
         parser.add_argument('shortName', nargs='+', help='host or hosts')
-        parser.add_argument('--long', '-l',action='store_const', help='long format (list of ips included)',const=True, default=False)
+        parser.add_argument('--long', '-l',action='store_const', help='long format (list of ips included)',const=True,
+                            default=False)
+        parser.add_argument('--debug', '-d', action='store_const', help='print debug info', const=True,
+                            default=False)
         arg = parser.parse_args()
 
         # TODO: Add multiprocessing
+        if arg.debug:
+            logger.info("Loglevel set to DEBUG")
+            logger.setLevel(logging.DEBUG)
+
+        logger.debug("Starting {} on {} with arguments: {}".format(sys.argv[0], datetime.datetime.today(), vars(arg)))
 
         for sn in arg.shortName:
-            sn = GetFQDN(sn)
+            sn = FQDN(sn)
             if sn.found:
-                if arg.long:
-                    print(sn.fqdn[0], sn.fqdn[2])
-                else:
+                if not arg.long:
                     print(sn.fqdn[0])
+                else:
+                    print(sn.fqdn[0], sn.fqdn[2])
+            else:
+                logger.warning('{} not found'.format(sn.shortName))
 
     main()
