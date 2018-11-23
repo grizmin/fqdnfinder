@@ -1,5 +1,6 @@
 from __future__ import print_function
 from socket import gethostbyname_ex as ghbnex
+from multiprocessing.pool import ThreadPool, Queue
 import argparse
 import logging
 import datetime
@@ -15,7 +16,7 @@ logstreamhandler.setFormatter(streamformater)
 logger.addHandler(logstreamhandler)
 
 
-class FQDN:
+class FQDN(object):
     found = False
     default_search_domains = {'hec.sap.biz', 'rot.hec.sap.biz', 'ams.hec.sap.biz', 'stl.hec.sap.biz', 'sac.hec.sap.biz',
                               'tyo.hec.sap.biz', 'osa.hec.sap.biz', 'syd.hec.sap.biz', 'mcc.rot.hec.sap.biz',
@@ -45,6 +46,10 @@ class FQDN:
             except:
                 logger.debug(possible_fqdn + 'is not the FQDN')
                 pass
+
+    def get(self):
+        return self.fqdn
+
 if __name__ == '__main__':
 
     def main():
@@ -59,15 +64,20 @@ if __name__ == '__main__':
 
         arg = parser.parse_args()
 
-        # TODO: Add multiprocessing
+        # TODO: Add multiprocessing - DONE
+        # TODO: Add thread names in logger
+        # TODO: use async and implment timeouts
+
+
         if arg.debug:
             logger.info("Loglevel set to DEBUG")
             logger.setLevel(logging.DEBUG)
 
         logger.debug("Starting {} on {} with arguments: {}".format(sys.argv[0], datetime.datetime.today(), vars(arg)))
 
-        for sn in arg.shortName:
-            sn = FQDN(sn)
+        pool = ThreadPool(processes=20)
+        multiple_results = pool.map(FQDN, arg.shortName)
+        for sn in multiple_results:
             if sn.found:
                 if not arg.long:
                     print(sn.fqdn[0])
@@ -76,5 +86,4 @@ if __name__ == '__main__':
             else:
                 if not arg.warn:
                     logger.warning('{} not found'.format(sn.shortName))
-
     main()
