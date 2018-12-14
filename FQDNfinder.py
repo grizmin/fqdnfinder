@@ -19,17 +19,16 @@ logger.addHandler(logstreamhandler)
 
 class FQDN(object):
     found = False
-    default_search_domains = ['rot.hec.sap.biz', 'ams.hec.sap.biz', 'stl.hec.sap.biz', 'sac.hec.sap.biz',
-                              'tyo.hec.sap.biz', 'osa.hec.sap.biz', 'syd.hec.sap.biz', 'mcc.rot.hec.sap.biz',
-                              'rot2.hec.sap.biz', 'irl.hec.sap.biz', 'us1.hec.sap.biz', 'syd2.hec.sap.biz',
-                              'mow.hec.sap.biz', 'mow2.hec.sap.biz',
-                              'yyz.hec.sap.biz', 'grizmin.org', 'int.grizmin.org', 'syd3.hec.sap.biz',
-                              'us4.hec.sap.biz', 'us3.hec.sap.biz',
-                              'us2.hec.sap.biz']
+    default_top_domain = 'hec.sap.biz'
+    landscape_list = ['rot', 'ams', 'stl', 'sac', 'tyo', 'osa', 'syd', 'mcc', 'rot2', 'irl', 'us1', 'syd2', 'mow',
+                      'mow2', 'yyz', 'syd3', 'us4', 'us3', 'us2', 'fra', 'yyz2']
+    default_search_domains = ['grizmin.org', 'int.grizmin.org']
 
-    def __init__(self, shortName, search_domain_list = set()):
+    default_search_domains += [landscape + default_top_domain for landscape in landscape_list]
+
+    def __init__(self, short_name, search_domain_list=set()):
         self.search_domain_list = search_domain_list
-        self.shortName = shortName
+        self.shortName = short_name
         if not search_domain_list:
             self.search_domain_list = self.default_search_domains
         self.fqdn = self.get_fqdn()
