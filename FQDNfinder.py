@@ -24,7 +24,7 @@ class FQDN(object):
                       'mow2', 'yyz', 'syd3', 'us4', 'us3', 'us2', 'fra', 'yyz2']
     default_search_domains = ['grizmin.org', 'int.grizmin.org']
 
-    default_search_domains += [landscape + default_top_domain for landscape in landscape_list]
+    default_search_domains += [landscape + '.' + default_top_domain for landscape in landscape_list]
 
     def __init__(self, short_name, search_domain_list=set()):
         self.search_domain_list = search_domain_list
